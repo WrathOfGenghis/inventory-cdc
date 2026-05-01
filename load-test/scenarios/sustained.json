@@ -1,0 +1,8 @@
+{
+  "name": "sustained",
+  "description": "Steady-state 800 events/sec for 10 minutes. Used to populate the §16.1 latency distribution and the §18 SLO baseline.",
+  "rate": 800,
+  "duration_seconds": 600,
+  "runs": 3,
+  "command": "python load-test/load_gen.py --scenario sustained --rate 800 --duration 600 --runs 3 --report results/sustained.json"
+}

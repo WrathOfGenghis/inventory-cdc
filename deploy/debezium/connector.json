@@ -1,0 +1,44 @@
+{
+  "name": "warehouse-pg-connector",
+  "config": {
+    "connector.class": "io.debezium.connector.postgresql.PostgresConnector",
+    "tasks.max": "1",
+
+    "database.hostname": "postgres",
+    "database.port": "5432",
+    "database.user": "debezium_reader",
+    "database.password": "debezium",
+    "database.dbname": "warehouse",
+    "database.server.name": "warehouse_db",
+
+    "plugin.name": "pgoutput",
+    "slot.name": "inventory_slot",
+    "publication.name": "inventory_pub",
+    "publication.autocreate.mode": "disabled",
+
+    "table.include.list": "public.warehouse_inventory",
+    "column.include.list": "public.warehouse_inventory.product_id,public.warehouse_inventory.warehouse_id,public.warehouse_inventory.available_qty,public.warehouse_inventory.reserved_qty,public.warehouse_inventory.stock_status,public.warehouse_inventory.row_version,public.warehouse_inventory.last_updated",
+
+    "snapshot.mode": "initial",
+    "heartbeat.interval.ms": "10000",
+    "topic.prefix": "cdc.inventory",
+    "topic.creation.default.replication.factor": "1",
+    "topic.creation.default.partitions": "12",
+
+    "transforms": "unwrap",
+    "transforms.unwrap.type": "io.debezium.transforms.ExtractNewRecordState",
+    "transforms.unwrap.drop.tombstones": "false",
+    "transforms.unwrap.delete.handling.mode": "rewrite",
+
+    "key.converter": "org.apache.kafka.connect.json.JsonConverter",
+    "key.converter.schemas.enable": "false",
+    "value.converter": "org.apache.kafka.connect.json.JsonConverter",
+    "value.converter.schemas.enable": "false",
+
+    "errors.tolerance": "all",
+    "errors.log.enable": "true",
+    "errors.deadletterqueue.topic.name": "cdc.inventory.dlq",
+    "errors.deadletterqueue.topic.replication.factor": "1",
+    "errors.deadletterqueue.context.headers.enable": "true"
+  }
+}

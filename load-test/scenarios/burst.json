@@ -1,0 +1,7 @@
+{
+  "name": "burst",
+  "description": "100,000 events injected as fast as the local Postgres can ingest them. The §16.5 'burst absorption' scenario from the project brief.",
+  "total_events": 100000,
+  "runs": 3,
+  "command": "python load-test/load_gen.py --scenario burst --total 100000 --runs 3 --report results/burst.json"
+}

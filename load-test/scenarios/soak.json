@@ -1,0 +1,8 @@
+{
+  "name": "soak",
+  "description": "24-hour low-rate run used to surface memory leaks, slow Postgres autovacuum interference, and Redis TTL eviction issues.",
+  "rate": 100,
+  "duration_seconds": 86400,
+  "runs": 1,
+  "command": "python load-test/load_gen.py --scenario soak --rate 100 --duration 86400 --runs 1 --report results/soak.json"
+}

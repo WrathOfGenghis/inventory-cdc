@@ -1,0 +1,51 @@
+# Production overrides for the inventory-cdc Helm chart.
+#
+# Apply with:
+#   helm upgrade --install inventory-cdc deploy/helm/inventory-cdc \
+#     -n inventory-prod -f deploy/helm/inventory-cdc/values-prod.yaml
+
+replicaCount: 4
+
+resources:
+  requests:
+    cpu: 500m
+    memory: 512Mi
+  limits:
+    cpu: "2"
+    memory: 2Gi
+
+autoscaling:
+  enabled: true
+  minReplicas: 4
+  maxReplicas: 12
+  targetLag: "5000"
+
+podDisruptionBudget:
+  enabled: true
+  minAvailable: 3
+
+networkPolicy:
+  enabled: true
+
+# Spread replicas across availability zones so a single zone failure
+# cannot take the whole consumer group down.
+affinity:
+  podAntiAffinity:
+    preferredDuringSchedulingIgnoredDuringExecution:
+      - weight: 100
+        podAffinityTerm:
+          labelSelector:
+            matchLabels:
+              app.kubernetes.io/name: inventory-cdc
+          topologyKey: topology.kubernetes.io/zone
+
+env:
+  KAFKA_BROKERS: "inventory-kafka-bootstrap.inventory-prod.svc:9093"
+  KAFKA_TOPIC: "cdc.inventory.warehouse"
+  KAFKA_GROUP: "inventory-orchestrator"
+  KAFKA_DLQ_TOPIC: "cdc.inventory.dlq"
+  POSTGRES_DSN: "postgres://app@inventory-pg.inventory-prod.svc:5432/website?sslmode=require"
+  REDIS_ADDR: "inventory-redis.inventory-prod.svc:6379"
+  SCHEMA_CONTRACT: "/etc/contracts/inventory.v3.yaml"
+  METRICS_ADDR: ":8080"
+  LOG_LEVEL: "info"

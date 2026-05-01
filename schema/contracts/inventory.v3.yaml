@@ -1,0 +1,38 @@
+# Schema contract for inventory CDC events, version v3.
+#
+# This file is the authoritative declaration of what the orchestrator will
+# accept. Changes here are part of the deploy artifact: a new contract
+# version is a new file (inventory.v4.yaml) — never edit a published
+# version in place. See §9 of the design report for the evolution policy.
+
+version: "v3"
+
+required_fields:
+  - event_id
+  - op
+  - product_id
+  - warehouse_id
+  - schema_version
+  - event_time
+  - after.available_qty
+  - after.row_version
+
+types:
+  event_id: "string"
+  op: "string"
+  product_id: "string"
+  warehouse_id: "string"
+  schema_version: "string"
+  after.available_qty: "int"
+  after.reserved_qty: "int"
+  after.stock_status: "string"
+  after.row_version: "long"
+
+# Allow new optional fields to flow through without rejecting the event.
+# Conditional decisions are still recorded as a warning metric so a
+# lingering schema drift becomes visible on the dashboard.
+allow_unknown_optional: true
+
+# Empty for v3: no field renames are in flight. When the next version
+# introduces a rename, populate this map and bump the file version.
+mapping: {}

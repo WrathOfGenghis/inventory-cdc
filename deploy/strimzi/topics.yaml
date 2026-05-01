@@ -1,0 +1,42 @@
+# KafkaTopic custom resources managed by the Strimzi topic operator.
+#
+# - cdc.inventory.warehouse : main CDC topic, 48 partitions for production
+#                             parallelism and 7-day retention for replay.
+# - cdc.inventory.dlq       : dead-letter topic, 6 partitions and 30-day
+#                             retention so operators have a generous
+#                             window to investigate before replay.
+
+---
+apiVersion: kafka.strimzi.io/v1beta2
+kind: KafkaTopic
+metadata:
+  name: cdc.inventory.warehouse
+  labels:
+    strimzi.io/cluster: inventory-kafka
+    app.kubernetes.io/part-of: inventory-cdc
+spec:
+  partitions: 48
+  replicas: 3
+  config:
+    retention.ms: "604800000"        # 7 days
+    min.insync.replicas: "2"
+    cleanup.policy: "delete"
+    compression.type: "zstd"
+    max.message.bytes: "2097152"     # 2 MB
+
+---
+apiVersion: kafka.strimzi.io/v1beta2
+kind: KafkaTopic
+metadata:
+  name: cdc.inventory.dlq
+  labels:
+    strimzi.io/cluster: inventory-kafka
+    app.kubernetes.io/part-of: inventory-cdc
+spec:
+  partitions: 6
+  replicas: 3
+  config:
+    retention.ms: "2592000000"       # 30 days
+    min.insync.replicas: "2"
+    cleanup.policy: "delete"
+    compression.type: "zstd"

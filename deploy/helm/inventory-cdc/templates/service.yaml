@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "inventory-cdc.fullname" . | default "inventory-cdc" }}
+  labels:
+    app.kubernetes.io/name: inventory-cdc
+    app.kubernetes.io/instance: {{ .Release.Name }}
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+    - name: metrics
+      port: {{ .Values.service.port }}
+      targetPort: metrics
+      protocol: TCP
+  selector:
+    app.kubernetes.io/name: inventory-cdc
+    app.kubernetes.io/instance: {{ .Release.Name }}

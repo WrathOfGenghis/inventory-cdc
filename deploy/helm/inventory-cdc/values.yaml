@@ -1,0 +1,60 @@
+# Default values for the inventory-cdc Helm chart.
+#
+# The values here are the development defaults used by `helm install` in a
+# kind/minikube cluster. Production overrides live in values-prod.yaml.
+
+image:
+  repository: gcr.io/inv-prod/orchestrator
+  tag: "1.4.2"
+  pullPolicy: IfNotPresent
+
+replicaCount: 2
+
+resources:
+  requests:
+    cpu: 250m
+    memory: 256Mi
+  limits:
+    cpu: "1"
+    memory: 1Gi
+
+service:
+  port: 8080
+  type: ClusterIP
+
+env:
+  KAFKA_BROKERS: "inventory-kafka-bootstrap:9092"
+  KAFKA_TOPIC: "cdc.inventory.warehouse"
+  KAFKA_GROUP: "inventory-orchestrator"
+  KAFKA_DLQ_TOPIC: "cdc.inventory.dlq"
+  POSTGRES_DSN: "postgres://app@inventory-pg:5432/website?sslmode=require"
+  REDIS_ADDR: "inventory-redis:6379"
+  SCHEMA_CONTRACT: "/etc/contracts/inventory.v3.yaml"
+  METRICS_ADDR: ":8080"
+  LOG_LEVEL: "info"
+
+autoscaling:
+  enabled: false
+  minReplicas: 2
+  maxReplicas: 8
+  targetLag: "5000"
+
+podDisruptionBudget:
+  enabled: false
+  minAvailable: 1
+
+networkPolicy:
+  enabled: false
+
+serviceAccount:
+  create: true
+  name: ""
+
+podAnnotations:
+  prometheus.io/scrape: "true"
+  prometheus.io/port: "8080"
+  prometheus.io/path: "/metrics"
+
+nodeSelector: {}
+tolerations: []
+affinity: {}

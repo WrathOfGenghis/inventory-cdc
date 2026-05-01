@@ -1,0 +1,18 @@
+apiVersion: v2
+name: inventory-cdc
+description: Streaming CDC orchestrator for the inventory live-sync pipeline
+type: application
+version: 0.1.0
+appVersion: "1.4.2"
+home: https://github.com/WrathOfGenghis/inventory-cdc
+sources:
+  - https://github.com/WrathOfGenghis/inventory-cdc
+maintainers:
+  - name: Inventory Platform Team
+    email: inventory-platform@example.com
+keywords:
+  - cdc
+  - kafka
+  - debezium
+  - inventory
+  - streaming
