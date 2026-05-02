@@ -15,10 +15,10 @@ func testContract() *Contract {
 			"after.available_qty", "after.row_version",
 		},
 		Types: map[string]string{
-			"product_id":           "string",
-			"warehouse_id":         "string",
-			"after.available_qty":  "int",
-			"after.row_version":    "long",
+			"product_id":          "string",
+			"warehouse_id":        "string",
+			"after.available_qty": "int",
+			"after.row_version":   "long",
 		},
 		AllowUnknownOptional: true,
 	}

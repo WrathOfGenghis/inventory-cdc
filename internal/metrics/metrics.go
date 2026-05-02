@@ -19,13 +19,13 @@ import (
 type Registry struct {
 	reg *prometheus.Registry
 
-	SyncLatency       *prometheus.HistogramVec
-	EventsTotal       *prometheus.CounterVec
-	DLQTotal          *prometheus.CounterVec
-	ConsumerLag       *prometheus.GaugeVec
-	SchemaWarnings    prometheus.Counter
-	MismatchCount     prometheus.Gauge
-	BreakerState      *prometheus.GaugeVec
+	SyncLatency    *prometheus.HistogramVec
+	EventsTotal    *prometheus.CounterVec
+	DLQTotal       *prometheus.CounterVec
+	ConsumerLag    *prometheus.GaugeVec
+	SchemaWarnings prometheus.Counter
+	MismatchCount  prometheus.Gauge
+	BreakerState   *prometheus.GaugeVec
 
 	ready atomic.Bool
 }

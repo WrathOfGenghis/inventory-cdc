@@ -173,28 +173,49 @@ def main() -> int:
     p.add_argument("--rate", type=int, default=100, help="events per second")
     p.add_argument("--duration", type=int, default=60, help="seconds (sustained, soak)")
     p.add_argument("--total", type=int, default=100_000, help="total events (burst)")
+    p.add_argument("--runs", type=int, default=1,
+                   help="repeat the scenario this many times; aggregate "
+                        "results are written alongside per-run files")
     p.add_argument("--dsn", default=DEFAULT_DSN)
     p.add_argument("--report", type=Path, default=None, help="write JSON summary here")
     args = p.parse_args()
 
+    if args.runs < 1:
+        raise SystemExit("--runs must be >= 1")
+
     random.seed()  # entropy from OS
 
-    stats = Stats()
-    with connect(args.dsn) as conn:
-        if args.scenario == "sustained":
-            run_sustained(conn, args.rate, args.duration, stats)
-        elif args.scenario == "burst":
-            run_burst(conn, args.total, stats)
-        else:
-            run_soak(conn, args.rate, args.duration, stats)
+    per_run: list[dict] = []
+    for run_idx in range(1, args.runs + 1):
+        if args.runs > 1:
+            print(f"[run {run_idx}/{args.runs}] starting scenario={args.scenario}")
+        stats = Stats()
+        with connect(args.dsn) as conn:
+            if args.scenario == "sustained":
+                run_sustained(conn, args.rate, args.duration, stats)
+            elif args.scenario == "burst":
+                run_burst(conn, args.total, stats)
+            else:
+                run_soak(conn, args.rate, args.duration, stats)
+        run_summary = stats.to_dict(args.scenario)
+        run_summary["run"] = run_idx
+        per_run.append(run_summary)
+        print(json.dumps(run_summary, indent=2))
 
-    summary = stats.to_dict(args.scenario)
-    print(json.dumps(summary, indent=2))
-    if args.report:
-        args.report.parent.mkdir(parents=True, exist_ok=True)
-        args.report.write_text(json.dumps(summary, indent=2))
+        # Write each run to a separate file so benchmark.py can aggregate
+        # them without us having to compute mean/stdev here.
+        if args.report:
+            args.report.parent.mkdir(parents=True, exist_ok=True)
+            if args.runs == 1:
+                target = args.report
+            else:
+                target = args.report.with_name(
+                    f"{args.report.stem}.run{run_idx}{args.report.suffix}"
+                )
+            target.write_text(json.dumps(run_summary, indent=2))
 
-    return 0 if stats.failed == 0 else 1
+    failures = sum(r.get("events_failed", 0) for r in per_run)
+    return 0 if failures == 0 else 1
 
 
 if __name__ == "__main__":

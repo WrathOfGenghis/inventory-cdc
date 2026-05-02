@@ -62,7 +62,7 @@ Capture: **C.3 CDC event JSON**, **C.4 Kafka topic message in flight**.
 
 ```bash
 docker compose logs --tail=20 orchestrator | grep SKU-AC-9482
-psql postgresql://app:app@localhost:5432/website \
+psql postgresql://app:app@localhost:5432/warehouse \
   -c "SELECT * FROM website_inventory WHERE product_id='SKU-AC-9482';"
 ```
 

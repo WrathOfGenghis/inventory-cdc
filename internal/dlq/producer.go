@@ -18,11 +18,11 @@ import (
 type Reason string
 
 const (
-	ReasonDecodeError      Reason = "decode_error"
-	ReasonMissingRequired  Reason = "missing_required"
-	ReasonSchemaBreaking   Reason = "schema_breaking"
-	ReasonProjectionError  Reason = "projection_error"
-	ReasonNoMapping        Reason = "no_mapping"
+	ReasonDecodeError     Reason = "decode_error"
+	ReasonMissingRequired Reason = "missing_required"
+	ReasonSchemaBreaking  Reason = "schema_breaking"
+	ReasonProjectionError Reason = "projection_error"
+	ReasonNoMapping       Reason = "no_mapping"
 )
 
 // Envelope is the JSON written to the DLQ topic. Keeping the envelope

@@ -135,7 +135,7 @@ services:
       KAFKA_TOPIC: cdc.inventory.warehouse
       KAFKA_GROUP: inventory-orchestrator
       KAFKA_DLQ_TOPIC: cdc.inventory.dlq
-      POSTGRES_DSN: postgres://app:app@postgres:5432/website?sslmode=disable
+      POSTGRES_DSN: postgres://app:app@postgres:5432/warehouse?sslmode=disable
       REDIS_ADDR: redis:6379
       SCHEMA_CONTRACT: /app/schema/contracts/inventory.v3.yaml
       METRICS_ADDR: ":8080"

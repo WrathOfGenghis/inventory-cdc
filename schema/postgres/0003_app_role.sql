@@ -11,8 +11,11 @@ BEGIN
     END IF;
 END $$;
 
+-- Both warehouse_inventory and website_inventory live in the same Postgres
+-- database in this dev stack (see 0001_init.sql) so the reconciliation
+-- view in 0005 can join them. In production these are split across two
+-- physical databases as described in §17.3 of the design report.
 GRANT CONNECT ON DATABASE warehouse TO app;
-GRANT CONNECT ON DATABASE website   TO app;
 
 GRANT USAGE ON SCHEMA public TO app;
 

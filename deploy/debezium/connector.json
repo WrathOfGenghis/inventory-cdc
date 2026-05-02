@@ -25,10 +25,10 @@
     "topic.creation.default.replication.factor": "1",
     "topic.creation.default.partitions": "12",
 
-    "transforms": "unwrap",
-    "transforms.unwrap.type": "io.debezium.transforms.ExtractNewRecordState",
-    "transforms.unwrap.drop.tombstones": "false",
-    "transforms.unwrap.delete.handling.mode": "rewrite",
+    "transforms": "rename",
+    "transforms.rename.type": "org.apache.kafka.connect.transforms.RegexRouter",
+    "transforms.rename.regex": "cdc\\.inventory\\.public\\.warehouse_inventory",
+    "transforms.rename.replacement": "cdc.inventory.warehouse",
 
     "key.converter": "org.apache.kafka.connect.json.JsonConverter",
     "key.converter.schemas.enable": "false",

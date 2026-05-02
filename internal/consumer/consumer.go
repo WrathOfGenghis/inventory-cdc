@@ -49,10 +49,10 @@ func Run(ctx context.Context, cfg Config, h Handler) error {
 		Brokers:           cfg.Brokers,
 		GroupID:           cfg.GroupID,
 		Topic:             cfg.Topic,
-		MinBytes:          10_000,           // 10 KB
-		MaxBytes:          10_000_000,       // 10 MB
+		MinBytes:          10_000,     // 10 KB
+		MaxBytes:          10_000_000, // 10 MB
 		MaxWait:           500 * time.Millisecond,
-		CommitInterval:    0,                // 0 = manual commits only
+		CommitInterval:    0, // 0 = manual commits only
 		StartOffset:       kafka.LastOffset,
 		HeartbeatInterval: 3 * time.Second,
 		SessionTimeout:    30 * time.Second,
